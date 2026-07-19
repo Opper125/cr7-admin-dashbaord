@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a14">
+  <title>CR7 Game Store</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+</head>
+<body>
+
+  <!-- ══════════════ AUTH PAGE (Login / Signup) ══════════════ -->
+  <div id="authPage" class="auth-page" style="display:none;">
+    <div class="auth-bg"></div>
+    <div class="auth-hex-grid"></div>
+    <div class="auth-container">
+      <div class="auth-logo-wrap">
+        <img src="/images/logo.webp" class="auth-logo" alt="CR7 Game Store" onerror="this.style.display='none'">
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="authTabLogin" type="button">Sign In</button>
+          <button class="auth-tab" id="authTabSignup" type="button">Create Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginFormSection">
+          <form id="loginForm" class="auth-form" autocomplete="on">
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/user.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Username or Email
+              </label>
+              <input type="text" id="loginIdentifier" class="form-input" placeholder="Enter username or email" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/lock.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Password
+              </label>
+              <div class="input-with-toggle">
+                <input type="password" id="loginPassword" class="form-input" placeholder="Enter password" autocomplete="current-password" required>
+                <button type="button" class="pw-toggle" tabindex="-1">👁</button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit-btn">
+              <img src="/images/icons/login.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+              Sign In
+            </button>
+          </form>
+          <p class="auth-switch">Don't have an account? <button type="button" onclick="AUTH_FORM.switchMode('signup')">Create one</button></p>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div id="signupFormSection" style="display:none;">
+          <form id="signupForm" class="auth-form" autocomplete="off">
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/user.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Full Name
+              </label>
+              <input type="text" id="signupName" class="form-input" placeholder="Your full name" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/at.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Username
+              </label>
+              <div class="username-input-wrap">
+                <span class="username-prefix">@</span>
+                <input type="text" id="signupUsername" class="form-input username-input" placeholder="Opper123" autocomplete="off" maxlength="16">
+              </div>
+              <div id="usernameError" class="field-msg" style="display:none;"></div>
+              <div class="username-rules">
+                <small>• Start with uppercase • Min 8, max 16 chars • English letters + numbers only • Min 5 letters</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/email.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Email
+              </label>
+              <input type="email" id="signupEmail" class="form-input" placeholder="your@email.com" required>
+              <div id="emailError" class="field-msg" style="display:none;"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <img src="/images/icons/lock.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Password
+              </label>
+              <div class="input-with-toggle">
+                <input type="password" id="signupPassword" class="form-input" placeholder="Min 8 chars, uppercase + @+$%#&*" maxlength="18">
+                <button type="button" class="pw-toggle" tabindex="-1">👁</button>
+              </div>
+              <div id="pwChecklist" class="pw-checklist"></div>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+              <img src="/images/icons/signup.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+              Create Account
+            </button>
+          </form>
+          <p class="auth-switch">Already have an account? <button type="button" onclick="AUTH_FORM.switchMode('login')">Sign in</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ LOADING SCREEN ══════════════ -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <img src="/images/logo.webp" class="loading-logo" alt="CR7" onerror="this.style.display='none'">
+      <div class="loading-spinner-wrap">
+        <div class="ice-spinner">
+          <div class="spinner-ring r1"></div>
+          <div class="spinner-ring r2"></div>
+          <div class="spinner-ring r3"></div>
+        </div>
+      </div>
+      <p class="loading-text">Loading CR7 Game Store...</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ MAIN APP ══════════════ -->
+  <div id="appContainer" class="app-container" style="display:none;">
+
+    <!-- TOP BAR -->
+    <header class="top-bar" id="topBar">
+      <div class="top-bar-left">
+        <img id="siteLogo" class="site-logo" src="/images/logo.webp" alt="CR7 Game Store"
+             onerror="this.style.display='none'">
+        <h1 id="siteName" class="site-name" style="display:none;">CR7 Game Store</h1>
+      </div>
+      <div class="top-bar-right">
+        <!-- Balance -->
+        <div class="balance-container" id="balanceContainer" style="display:none;">
+          <div class="balance-display" id="balanceDisplay">
+            <div class="balance-primary">
+              <span id="primaryBalanceAmount">0</span>
+              <span class="balance-cur" id="primaryCurrency">MMK</span>
+            </div>
+            <div class="balance-secondary">
+              <span id="secondaryBalanceAmount">0.00</span>
+              <span class="balance-cur" id="secondaryCurrency">USD</span>
+            </div>
+          </div>
+          <button class="icon-btn" id="swapCurrencyBtn" title="Switch Currency" type="button">
+            <img src="/images/icons/swap.png" onerror="this.innerHTML='⇄'" style="width:16px;" alt="">
+          </button>
+          <button class="icon-btn topup-btn-small" id="topupBtnSmall" title="Top Up" type="button">
+            <img src="/images/icons/plus.png" onerror="this.innerHTML='+'" style="width:16px;" alt="">
+          </button>
+        </div>
+
+        <!-- Search button -->
+        <button class="icon-btn search-icon-btn" id="searchBtn" title="Search Games" type="button">
+          <img src="/images/icons/search.png" onerror="this.innerHTML='🔍'" style="width:18px;" alt="">
+        </button>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <main class="pages-container" id="pagesContainer">
+
+      <!-- HOME PAGE -->
+      <section class="page active" id="homePage" data-page="home">
+        <div class="banner-section">
+          <div class="banner-slider">
+            <div class="banner-track" id="bannerTrack"></div>
+          </div>
+          <div class="banner-dots" id="bannerDots"></div>
+        </div>
+
+        <div class="live-text-bar" id="liveTextContainer">
+          <span class="live-badge">
+            <img src="/images/icons/live.png" onerror="this.style.display='none'" style="width:10px;" alt="">
+            LIVE
+          </span>
+          <p class="live-text" id="liveText">Welcome!</p>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+          <button class="category-tab active" data-tab="g2bulk" type="button">
+            <img src="/images/icons/gamepad.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+            Games
+          </button>
+        </div>
+
+        <div class="tab-content" id="tabContent">
+          <div class="tab-pane active" id="g2bulkPane" data-pane="g2bulk">
+            <div class="categories-grid" id="g2bulkCategoriesGrid">
+              <div class="skeleton-grid">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEARCH PAGE -->
+      <section class="page" id="searchPage" data-page="search">
+        <div class="page-header">
+          <button class="back-btn" id="searchBackBtn" type="button">
+            <img src="/images/icons/arrow-left.png" onerror="this.innerHTML='←'" style="width:18px;" alt="">
+          </button>
+          <h2 class="page-title">Search Games</h2>
+        </div>
+        <div class="search-bar-wrap">
+          <img src="/images/icons/search.png" onerror="this.style.display='none'" style="width:18px;" alt="">
+          <input type="text" id="searchInput" class="search-bar-input" placeholder="Search for a game...">
+        </div>
+        <div id="searchResults" class="search-results-list"></div>
+      </section>
+
+      <!-- CATEGORY DETAIL -->
+      <section class="page" id="categoryDetailPage" data-page="categoryDetail">
+        <div class="page-header">
+          <button class="back-btn" id="categoryBackBtn" type="button">
+            <img src="/images/icons/arrow-left.png" onerror="this.innerHTML='←'" style="width:18px;" alt="">
+          </button>
+          <h2 class="page-title" id="categoryDetailTitle">Category</h2>
+        </div>
+        <div class="category-banner" id="categoryBanner"></div>
+        <div id="playerIdSection" style="display:none;"></div>
+        <div id="customInputsSection" style="display:none;"></div>
+        <div class="products-list" id="categoryProductsList"></div>
+        <div class="feedback-section" id="feedbackSection">
+          <h3>
+            <img src="/images/icons/star.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+            Reviews
+          </h3>
+          <div id="feedbackSummary"></div>
+          <div id="feedbackList"></div>
+          <button class="write-feedback-btn" id="writeFeedbackBtn" style="display:none;" type="button">
+            <img src="/images/icons/pen.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+            Write Review
+          </button>
+        </div>
+        <div class="category-guide" id="categoryGuide" style="display:none;">
+          <h3>
+            <img src="/images/icons/book.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+            Guide
+          </h3>
+          <div id="guideText"></div>
+        </div>
+      </section>
+
+      <!-- GAME ACCOUNT DETAIL -->
+      <section class="page" id="gameAccountDetailPage" data-page="gameAccountDetail">
+        <div class="page-header">
+          <button class="back-btn" id="gameAccountBackBtn" type="button">
+            <img src="/images/icons/arrow-left.png" onerror="this.innerHTML='←'" style="width:18px;" alt="">
+          </button>
+          <h2 class="page-title">Account Details</h2>
+        </div>
+        <div id="gameAccountDetail"></div>
+      </section>
+
+      <!-- HISTORY PAGE -->
+      <section class="page" id="historyPage" data-page="history">
+        <div class="page-inner-header">
+          <img src="/images/icons/history.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+          <h2>Order History</h2>
+        </div>
+        <div class="history-tabs">
+          <button class="htab active" data-htab="all" type="button">All</button>
+          <button class="htab" data-htab="completed" type="button">Done</button>
+          <button class="htab" data-htab="pending" type="button">Pending</button>
+          <button class="htab" data-htab="failed" type="button">Failed</button>
+        </div>
+        <div class="orders-list" id="ordersList"></div>
+      </section>
+
+      <!-- NEWS PAGE -->
+      <section class="page" id="newsPage" data-page="news">
+        <div class="page-inner-header">
+          <img src="/images/icons/news.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+          <h2>News</h2>
+        </div>
+        <div class="news-list" id="newsList"></div>
+      </section>
+
+      <!-- PROFILE PAGE -->
+      <section class="page" id="profilePage" data-page="profile">
+        <div class="profile-header">
+          <div class="profile-avatar-wrap">
+            <img src="/images/icons/avatar.png" class="profile-avatar" id="profileAvatar" alt="Avatar" onerror="this.src='/images/icons/avatar.png'">
+          </div>
+          <h2 class="profile-name" id="profileName">Guest</h2>
+          <p class="profile-username" id="profileUsername">@username</p>
+        </div>
+        <div class="profile-stats">
+          <div class="stat-card">
+            <img src="/images/icons/mmk.png" onerror="this.style.display='none'" style="width:28px;" alt="">
+            <span class="stat-value" id="profileBalanceMMK">0 MMK</span>
+            <span class="stat-label">MMK Balance</span>
+          </div>
+          <div class="stat-card">
+            <img src="/images/icons/usd.png" onerror="this.style.display='none'" style="width:28px;" alt="">
+            <span class="stat-value" id="profileBalanceUSD">$0.00</span>
+            <span class="stat-label">USD Balance</span>
+          </div>
+          <div class="stat-card">
+            <img src="/images/icons/orders.png" onerror="this.style.display='none'" style="width:28px;" alt="">
+            <span class="stat-value" id="profileTotalOrders">0</span>
+            <span class="stat-label">Total Orders</span>
+          </div>
+        </div>
+        <div class="profile-menu">
+          <button class="profile-menu-item" id="transactionHistoryBtn" type="button">
+            <img src="/images/icons/transactions.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+            <span>Transactions</span>
+            <img src="/images/icons/arrow-right.png" onerror="this.style.display='none'" style="width:14px;margin-left:auto;" alt="">
+          </button>
+          <button class="profile-menu-item" id="leaderboardBtn" type="button">
+            <img src="/images/icons/trophy.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+            <span>Leaderboard</span>
+            <img src="/images/icons/arrow-right.png" onerror="this.style.display='none'" style="width:14px;margin-left:auto;" alt="">
+          </button>
+          <button class="profile-menu-item logout-item" id="logoutBtn" style="display:none;" type="button">
+            <img src="/images/icons/logout.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+            <span>Sign Out</span>
+            <img src="/images/icons/arrow-right.png" onerror="this.style.display='none'" style="width:14px;margin-left:auto;" alt="">
+          </button>
+        </div>
+      </section>
+
+      <!-- LEADERBOARD -->
+      <section class="page" id="leaderboardPage" data-page="leaderboard">
+        <div class="page-header">
+          <button class="back-btn" id="leaderboardBackBtn" type="button">
+            <img src="/images/icons/arrow-left.png" onerror="this.innerHTML='←'" style="width:18px;" alt="">
+          </button>
+          <h2 class="page-title">
+            <img src="/images/icons/trophy.png" onerror="this.style.display='none'" style="width:20px;" alt="">
+            Top Spenders
+          </h2>
+        </div>
+        <div class="leaderboard-list" id="leaderboardList"></div>
+      </section>
+
+      <!-- TRANSACTIONS -->
+      <section class="page" id="transactionsPage" data-page="transactions">
+        <div class="page-header">
+          <button class="back-btn" id="transactionsBackBtn" type="button">
+            <img src="/images/icons/arrow-left.png" onerror="this.innerHTML='←'" style="width:18px;" alt="">
+          </button>
+          <h2 class="page-title">Transactions</h2>
+        </div>
+        <div id="transactionsList"></div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-item active" data-nav="home" type="button">
+        <img src="/images/icons/home.png" onerror="this.innerHTML='⌂'" style="width:22px;height:22px;" alt="">
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-nav="history" type="button">
+        <img src="/images/icons/history.png" onerror="this.innerHTML='📋'" style="width:22px;height:22px;" alt="">
+        <span>Orders</span>
+      </button>
+      <button class="nav-topup" id="topupCenterBtn" type="button">
+        <div class="topup-circle">
+          <img src="/images/icons/wallet.png" onerror="this.innerHTML='+'" style="width:26px;height:26px;" alt="">
+        </div>
+      </button>
+      <button class="nav-item" data-nav="news" type="button">
+        <img src="/images/icons/news.png" onerror="this.innerHTML='📰'" style="width:22px;height:22px;" alt="">
+        <span>News</span>
+      </button>
+      <button class="nav-item" data-nav="profile" type="button">
+        <img src="/images/icons/user.png" onerror="this.innerHTML='👤'" style="width:22px;height:22px;" alt="">
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div><!-- /appContainer -->
+
+  <!-- ══════════════ TOAST CONTAINER ══════════════ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ══════════════ MODALS ══════════════ -->
+
+  <!-- Topup Modal -->
+  <div class="modal" id="topupModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>
+          <img src="/images/icons/wallet.png" onerror="this.style.display='none'" style="width:18px;" alt="">
+          Top Up Balance
+        </h3>
+        <button class="modal-close" data-close-modal type="button">
+          <img src="/images/icons/close.png" onerror="this.innerHTML='✕'" style="width:16px;" alt="">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="topup-currency-tabs">
+          <button class="tcur-tab active" data-tcur="MMK" type="button">MMK</button>
+          <button class="tcur-tab" data-tcur="USD" type="button">USD</button>
+        </div>
+        <div class="topup-note" id="topupNote"></div>
+        <div class="topup-limits" id="topupLimits"></div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" id="topupAmount" class="form-input" placeholder="Enter amount" min="0">
+        </div>
+        <div class="payment-methods-grid" id="paymentMethodsGrid"></div>
+        <div id="selectedPayment" style="display:none;">
+          <div id="paymentInfo"></div>
+          <div class="form-group">
+            <label class="form-label">Upload Receipt (max 2MB)</label>
+            <div class="file-upload-area">
+              <input type="file" id="receiptFile" accept="image/*">
+              <div class="file-upload-placeholder">
+                <img src="/images/icons/upload.png" onerror="this.style.display='none'" style="width:28px;" alt="">
+                <span>Choose receipt image</span>
+              </div>
+            </div>
+            <div id="receiptPreview" style="display:none;"></div>
+          </div>
+          <button class="auth-submit-btn" id="submitDepositBtn" type="button">
+            <img src="/images/icons/send.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+            Submit Deposit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirm Modal -->
+  <div class="modal" id="orderModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-md">
+      <div class="modal-header">
+        <h3>
+          <img src="/images/icons/cart.png" onerror="this.style.display='none'" style="width:18px;" alt="">
+          Confirm Order
+        </h3>
+        <button class="modal-close" data-close-modal type="button">
+          <img src="/images/icons/close.png" onerror="this.innerHTML='✕'" style="width:16px;" alt="">
+        </button>
+      </div>
+      <div class="modal-body" id="orderModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div class="modal" id="receiptModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-md">
+      <div class="modal-body">
+        <div id="receiptContainer"></div>
+        <div class="receipt-actions">
+          <button class="close-receipt-btn" data-close-modal type="button">
+            <img src="/images/icons/close.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal" id="feedbackModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3>
+          <img src="/images/icons/star.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+          Write Review
+        </h3>
+        <button class="modal-close" data-close-modal type="button">
+          <img src="/images/icons/close.png" onerror="this.innerHTML='✕'" style="width:16px;" alt="">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="stars-input" id="starsInput">
+          <span class="star active" data-star="1">★</span>
+          <span class="star active" data-star="2">★</span>
+          <span class="star active" data-star="3">★</span>
+          <span class="star active" data-star="4">★</span>
+          <span class="star active" data-star="5">★</span>
+        </div>
+        <div class="form-group">
+          <textarea id="feedbackMessage" class="form-input" placeholder="Write your review..." rows="3"></textarea>
+        </div>
+        <button class="auth-submit-btn" id="submitFeedbackBtn" type="button">
+          <img src="/images/icons/send.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+          Submit Review
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/location.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

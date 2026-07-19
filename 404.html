@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Orbitron', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .bg {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%);
+    }
+    .grid {
+      position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,30,30,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,30,30,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    .content {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 40px;
+    }
+    .num {
+      font-size: clamp(80px, 20vw, 180px);
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, #ff3333 0%, #ff6666 50%, #cc0000 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      filter: drop-shadow(0 0 30px rgba(255,50,50,0.5));
+      letter-spacing: -4px;
+    }
+    .line {
+      width: 200px; height: 2px;
+      background: linear-gradient(90deg, transparent, #ff3333, transparent);
+      margin: 20px auto;
+    }
+    h2 {
+      font-size: clamp(14px, 3vw, 22px);
+      letter-spacing: 4px;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 12px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+    .box {
+      border: 1px solid rgba(255,50,50,0.2);
+      border-radius: 4px;
+      padding: 20px 40px;
+      background: rgba(255,30,30,0.03);
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div class="content">
+    <div class="num">404</div>
+    <div class="line"></div>
+    <h2>ACCESS DENIED</h2>
+    <p>THIS PAGE DOES NOT EXIST</p>
+    <div class="box">
+      <p style="color:#444; font-size:10px; letter-spacing:3px;">SYSTEM SECURITY ACTIVE</p>
+    </div>
+  </div>
+</body>
+</html>

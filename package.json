@@ -1,0 +1,12 @@
+{
+  "name": "cr7-gamestore",
+  "version": "2.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "bcryptjs": "^2.4.3",
+    "busboy": "^1.6.0",
+    "node-fetch": "^2.7.0",
+    "uuid": "^9.0.0"
+  }
+}

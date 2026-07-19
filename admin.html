@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CR7 Admin Panel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Leaflet for map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="admin-body">
+
+  <!-- LOADING -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <img src="/images/logo.webp" class="loading-logo" alt="CR7" onerror="this.style.display='none'">
+      <div class="loading-spinner-wrap">
+        <div class="ice-spinner">
+          <div class="spinner-ring r1"></div>
+          <div class="spinner-ring r2"></div>
+        </div>
+      </div>
+      <p class="loading-text">Verifying access...</p>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN FORM -->
+  <div id="adminLoginForm" class="admin-login-page" style="display:none;">
+    <div class="auth-bg"></div>
+    <div class="auth-hex-grid"></div>
+    <div class="admin-login-card">
+      <img src="/images/logo.webp" class="admin-login-logo" alt="CR7 Admin" onerror="this.style.display='none'">
+      <div class="admin-login-title">
+        <img src="/images/icons/crown.png" onerror="this.style.display='none'" style="width:24px;" alt="">
+        Admin Panel
+      </div>
+      <form id="adminPasswordForm">
+        <div class="form-group">
+          <label class="form-label">
+            <img src="/images/icons/lock.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+            Admin Password
+          </label>
+          <div class="input-with-toggle">
+            <input type="password" id="adminPasswordInput" class="form-input" placeholder="Enter admin password" required autofocus>
+            <button type="button" class="pw-toggle" tabindex="-1">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="auth-submit-btn">
+          <img src="/images/icons/login.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+          Access Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" class="admin-dashboard" style="display:none;">
+
+    <!-- ADMIN TOP BAR -->
+    <header class="admin-top-bar">
+      <button class="admin-menu-toggle" id="adminMenuToggle" type="button">
+        <img src="/images/icons/menu.png" onerror="this.innerHTML='☰'" style="width:20px;" alt="">
+      </button>
+      <div class="admin-brand">
+        <img src="/images/logo.webp" style="height:36px;" alt="CR7" onerror="this.style.display='none'">
+        <span>Admin Panel</span>
+      </div>
+      <div class="admin-top-right">
+        <span class="admin-ip-display" id="adminIpDisplay">IP: Loading...</span>
+        <button class="admin-logout-btn" id="adminLogoutBtn" type="button">
+          <img src="/images/icons/logout.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="admin-nav">
+          <button class="admin-nav-item active" data-section="overview" type="button">
+            <img src="/images/icons/dashboard.png" onerror="this.innerHTML='📊'" style="width:18px;" alt="">
+            Overview
+          </button>
+          <button class="admin-nav-item" data-section="g2bulk" type="button">
+            <img src="/images/icons/gamepad.png" onerror="this.innerHTML='🎮'" style="width:18px;" alt="">
+            G2Bulk API
+          </button>
+          <button class="admin-nav-item" data-section="banners" type="button">
+            <img src="/images/icons/image.png" onerror="this.innerHTML='🖼'" style="width:18px;" alt="">
+            Banners
+          </button>
+          <button class="admin-nav-item" data-section="pages" type="button">
+            <img src="/images/icons/page.png" onerror="this.innerHTML='📄'" style="width:18px;" alt="">
+            Custom Pages
+          </button>
+          <button class="admin-nav-item" data-section="categories" type="button">
+            <img src="/images/icons/category.png" onerror="this.innerHTML='📂'" style="width:18px;" alt="">
+            Categories
+          </button>
+          <button class="admin-nav-item" data-section="products" type="button">
+            <img src="/images/icons/product.png" onerror="this.innerHTML='📦'" style="width:18px;" alt="">
+            Products
+          </button>
+          <button class="admin-nav-item" data-section="game-accounts" type="button">
+            <img src="/images/icons/game-account.png" onerror="this.innerHTML='🕹'" style="width:18px;" alt="">
+            Game Accounts
+          </button>
+          <button class="admin-nav-item" data-section="news" type="button">
+            <img src="/images/icons/news.png" onerror="this.innerHTML='📰'" style="width:18px;" alt="">
+            News
+          </button>
+          <button class="admin-nav-item" data-section="payments" type="button">
+            <img src="/images/icons/payment.png" onerror="this.innerHTML='💳'" style="width:18px;" alt="">
+            Payments
+          </button>
+          <button class="admin-nav-item" data-section="deposits" type="button">
+            <img src="/images/icons/deposit.png" onerror="this.innerHTML='💰'" style="width:18px;" alt="">
+            Deposits
+            <span class="nav-badge" id="pendingDepositsBadge" style="display:none;">0</span>
+          </button>
+          <button class="admin-nav-item" data-section="users" type="button">
+            <img src="/images/icons/users.png" onerror="this.innerHTML='👥'" style="width:18px;" alt="">
+            Users
+          </button>
+          <button class="admin-nav-item" data-section="orders" type="button">
+            <img src="/images/icons/orders.png" onerror="this.innerHTML='📋'" style="width:18px;" alt="">
+            Orders
+          </button>
+          <button class="admin-nav-item" data-section="location" type="button">
+            <img src="/images/icons/location.png" onerror="this.innerHTML='📍'" style="width:18px;" alt="">
+            Location Map
+          </button>
+          <button class="admin-nav-item" data-section="settings" type="button">
+            <img src="/images/icons/settings.png" onerror="this.innerHTML='⚙'" style="width:18px;" alt="">
+            Settings
+          </button>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="admin-content" id="adminContent">
+
+        <!-- OVERVIEW -->
+        <section class="admin-section active" id="sectionOverview" data-section="overview">
+          <h2>
+            <img src="/images/icons/dashboard.png" onerror="this.style.display='none'" style="width:22px;" alt="">
+            Dashboard Overview
+          </h2>
+          <div class="admin-stats-grid">
+            <div class="admin-stat-box">
+              <img src="/images/icons/users.png" onerror="this.style.display='none'" alt="">
+              <span class="stat-num" id="statTotalUsers">0</span>
+              <span class="stat-lbl">Total Users</span>
+            </div>
+            <div class="admin-stat-box">
+              <img src="/images/icons/orders.png" onerror="this.style.display='none'" alt="">
+              <span class="stat-num" id="statTotalOrders">0</span>
+              <span class="stat-lbl">Total Orders</span>
+            </div>
+            <div class="admin-stat-box">
+              <img src="/images/icons/deposit.png" onerror="this.style.display='none'" alt="">
+              <span class="stat-num" id="statPendingDeposits">0</span>
+              <span class="stat-lbl">Pending Deposits</span>
+            </div>
+            <div class="admin-stat-box">
+              <img src="/images/icons/usd.png" onerror="this.style.display='none'" alt="">
+              <span class="stat-num" id="statApiBalance">$0.00</span>
+              <span class="stat-lbl">G2Bulk Balance</span>
+            </div>
+          </div>
+          <div class="recent-activity-card">
+            <h3>Recent Orders</h3>
+            <div id="activityList"></div>
+          </div>
+        </section>
+
+        <!-- G2BULK -->
+        <section class="admin-section" id="sectionG2bulk" data-section="g2bulk">
+          <h2>G2Bulk API Management</h2>
+          <div class="admin-info-cards">
+            <div class="admin-info-card">
+              <h4>API Balance</h4>
+              <span class="api-balance-val" id="g2bulkBalance">$0.00</span>
+            </div>
+            <div class="admin-info-card">
+              <h4>Status</h4>
+              <span id="g2bulkStatus" class="status-online">Checking...</span>
+            </div>
+          </div>
+          <div class="admin-form-section">
+            <h3>Price Settings</h3>
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Exchange Rate (1 USD = ? MMK)</label>
+                <input type="number" id="mmkRateInput" class="admin-input" step="1" placeholder="4500">
+              </div>
+              <div class="admin-form-group">
+                <label>MMK Profit (%)</label>
+                <input type="number" id="mmkProfitInput" class="admin-input" step="0.01" placeholder="5">
+              </div>
+              <div class="admin-form-group">
+                <label>USD Profit (%)</label>
+                <input type="number" id="usdProfitInput" class="admin-input" step="0.01" placeholder="3">
+              </div>
+            </div>
+            <button class="admin-btn primary" id="savePriceSettingsBtn">
+              <img src="/images/icons/save.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Save Price Settings
+            </button>
+          </div>
+        </section>
+
+        <!-- BANNERS -->
+        <section class="admin-section" id="sectionBanners" data-section="banners">
+          <h2>Banner Management</h2>
+          <div class="admin-form-section">
+            <h3>Home Banners</h3>
+            <div class="admin-upload-row">
+              <input type="file" id="bannerFile" accept="image/*" class="admin-file-input">
+              <button class="admin-btn primary" id="addBannerBtn">
+                <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+                Upload Banner
+              </button>
+            </div>
+            <div id="bannersAdminList" class="admin-list"></div>
+          </div>
+        </section>
+
+        <!-- CUSTOM PAGES -->
+        <section class="admin-section" id="sectionPages" data-section="pages">
+          <h2>Custom Pages</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Page Name</label>
+                <input type="text" id="pageNameInput" class="admin-input" placeholder="e.g., Game Accounts">
+              </div>
+              <div class="admin-form-group">
+                <label>Page Type</label>
+                <select id="pageTypeSelect" class="admin-input">
+                  <option value="normal">Normal</option>
+                  <option value="game_account">Game Account</option>
+                </select>
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createPageBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Create Page
+            </button>
+          </div>
+          <div id="pagesList" class="admin-list"></div>
+        </section>
+
+        <!-- CATEGORIES -->
+        <section class="admin-section" id="sectionCategories" data-section="categories">
+          <h2>Custom Categories</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Page</label>
+                <select id="catPageSelect" class="admin-input"></select>
+              </div>
+              <div class="admin-form-group">
+                <label>Category Name</label>
+                <input type="text" id="catNameInput" class="admin-input" placeholder="Category name">
+              </div>
+              <div class="admin-form-group">
+                <label>Icon Image</label>
+                <input type="file" id="catIconFile" accept="image/*" class="admin-file-input">
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createCategoryBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Create Category
+            </button>
+          </div>
+          <div id="categoriesListAdmin" class="admin-list"></div>
+        </section>
+
+        <!-- PRODUCTS -->
+        <section class="admin-section" id="sectionProducts" data-section="products">
+          <h2>Custom Products</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Category</label>
+                <select id="prodCategorySelect" class="admin-input"></select>
+              </div>
+              <div class="admin-form-group">
+                <label>Product Name</label>
+                <input type="text" id="prodNameInput" class="admin-input" placeholder="Product name">
+              </div>
+              <div class="admin-form-group">
+                <label>Amount / Description</label>
+                <input type="text" id="prodAmountInput" class="admin-input" placeholder="e.g., 100 Diamonds">
+              </div>
+              <div class="admin-form-group">
+                <label>Price (MMK)</label>
+                <input type="number" id="prodPriceMMK" class="admin-input" step="1" placeholder="0">
+              </div>
+              <div class="admin-form-group">
+                <label>Price (USD)</label>
+                <input type="number" id="prodPriceUSD" class="admin-input" step="0.01" placeholder="0.00">
+              </div>
+              <div class="admin-form-group">
+                <label>Delivery Time</label>
+                <input type="text" id="prodDeliveryTime" class="admin-input" placeholder="Instant" value="Instant">
+              </div>
+              <div class="admin-form-group">
+                <label>Stock</label>
+                <input type="number" id="prodStock" class="admin-input" placeholder="0" value="0">
+              </div>
+              <div class="admin-form-group">
+                <label>Product Icon</label>
+                <input type="file" id="prodIconFile" accept="image/*" class="admin-file-input">
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createProductBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Create Product
+            </button>
+          </div>
+          <div id="productsListAdmin" class="admin-list"></div>
+        </section>
+
+        <!-- GAME ACCOUNTS -->
+        <section class="admin-section" id="sectionGameAccounts" data-section="game-accounts">
+          <h2>Game Accounts</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Page</label>
+                <select id="gaPageSelect" class="admin-input"></select>
+              </div>
+              <div class="admin-form-group">
+                <label>Game Name</label>
+                <input type="text" id="gaGameName" class="admin-input" placeholder="e.g., PUBG Mobile Account">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Description</label>
+                <textarea id="gaDescription" class="admin-input" rows="3" placeholder="Account details..."></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label>Game Version</label>
+                <input type="text" id="gaVersion" class="admin-input" placeholder="Global / Korean">
+              </div>
+              <div class="admin-form-group">
+                <label>Price (MMK)</label>
+                <input type="number" id="gaPriceMMK" class="admin-input" step="1" placeholder="0">
+              </div>
+              <div class="admin-form-group">
+                <label>Price (USD)</label>
+                <input type="number" id="gaPriceUSD" class="admin-input" step="0.01" placeholder="0.00">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Linked Platforms</label>
+                <div class="platform-checkboxes" id="gaPlatforms">
+                  <label class="chk-item"><input type="checkbox" value="Google"> Google</label>
+                  <label class="chk-item"><input type="checkbox" value="Facebook"> Facebook</label>
+                  <label class="chk-item"><input type="checkbox" value="Email Link"> Email Link</label>
+                  <label class="chk-item"><input type="checkbox" value="WeChat"> WeChat</label>
+                  <label class="chk-item"><input type="checkbox" value="Apple ID"> Apple ID</label>
+                  <label class="chk-item"><input type="checkbox" value="Twitter/X"> Twitter/X</label>
+                </div>
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createGameAccountBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Create Game Account
+            </button>
+          </div>
+          <div id="gameAccountsList" class="admin-list"></div>
+        </section>
+
+        <!-- NEWS -->
+        <section class="admin-section" id="sectionNews" data-section="news">
+          <h2>News Management</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Title</label>
+                <input type="text" id="newsTitle" class="admin-input" placeholder="News title">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Content</label>
+                <textarea id="newsContent" class="admin-input" rows="4" placeholder="News content..."></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label>Media URL (optional)</label>
+                <input type="text" id="newsMediaLink" class="admin-input" placeholder="https://...">
+              </div>
+              <div class="admin-form-group">
+                <label><input type="checkbox" id="newsHasClaim"> Enable Claim Reward</label>
+              </div>
+              <div id="claimSettings" style="display:none;" class="admin-form-group full-width">
+                <div class="admin-form-grid">
+                  <div class="admin-form-group">
+                    <label>Claim MMK Amount</label>
+                    <input type="number" id="newsClaimMMK" class="admin-input" step="1" value="0">
+                  </div>
+                  <div class="admin-form-group">
+                    <label>Claim USD Amount</label>
+                    <input type="number" id="newsClaimUSD" class="admin-input" step="0.01" value="0">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createNewsBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Create News
+            </button>
+          </div>
+          <div id="newsListAdmin" class="admin-list"></div>
+        </section>
+
+        <!-- PAYMENTS -->
+        <section class="admin-section" id="sectionPayments" data-section="payments">
+          <h2>Payment Methods</h2>
+          <div class="currency-type-tabs">
+            <button class="ptype-tab active" data-ptype="MMK" type="button">MMK</button>
+            <button class="ptype-tab" data-ptype="USD" type="button">USD</button>
+          </div>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Payment Name</label>
+                <input type="text" id="payName" class="admin-input" placeholder="e.g., KBZ Pay">
+              </div>
+              <div class="admin-form-group">
+                <label>Account Number / Address</label>
+                <input type="text" id="payAddress" class="admin-input" placeholder="09xxxxxxxxx">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Note / MEMO (optional)</label>
+                <input type="text" id="payNote" class="admin-input" placeholder="Transfer note">
+              </div>
+            </div>
+            <button class="admin-btn primary" id="createPaymentBtn">
+              <img src="/images/icons/plus.png" onerror="this.style.display='none'" style="width:14px;" alt="">
+              Add Payment Method
+            </button>
+          </div>
+          <div id="paymentsAdminList" class="admin-list"></div>
+        </section>
+
+        <!-- DEPOSITS -->
+        <section class="admin-section" id="sectionDeposits" data-section="deposits">
+          <h2>Deposit Requests</h2>
+          <div class="deposit-filter-tabs">
+            <button class="dep-tab active" data-dep-status="pending" type="button">Pending</button>
+            <button class="dep-tab" data-dep-status="approved" type="button">Approved</button>
+            <button class="dep-tab" data-dep-status="rejected" type="button">Rejected</button>
+            <button class="dep-tab" data-dep-status="all" type="button">All</button>
+          </div>
+          <div id="depositsAdminList" class="admin-list"></div>
+        </section>
+
+        <!-- USERS -->
+        <section class="admin-section" id="sectionUsers" data-section="users">
+          <h2>Users Management</h2>
+          <div id="usersAdminList" class="admin-list"></div>
+        </section>
+
+        <!-- ORDERS -->
+        <section class="admin-section" id="sectionOrders" data-section="orders">
+          <h2>Orders</h2>
+          <div id="ordersAdminList" class="admin-list"></div>
+        </section>
+
+        <!-- LOCATION MAP -->
+        <section class="admin-section" id="sectionLocation" data-section="location">
+          <h2>
+            <img src="/images/icons/location.png" onerror="this.style.display='none'" style="width:22px;" alt="">
+            Active User Locations
+          </h2>
+          <div class="location-layout">
+            <div id="adminMap" class="admin-map"></div>
+            <div class="location-sidebar">
+              <h3>Active Users</h3>
+              <div id="locationUserList" class="loc-user-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="admin-section" id="sectionSettings" data-section="settings">
+          <h2>Site Settings</h2>
+          <div class="admin-form-section">
+            <div class="admin-form-grid">
+              <div class="admin-form-group">
+                <label>Site Name</label>
+                <input type="text" id="settingsSiteName" class="admin-input" placeholder="CR7 Game Store">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Live Text (Ticker)</label>
+                <input type="text" id="settingsLiveText" class="admin-input" placeholder="Welcome message...">
+              </div>
+              <div class="admin-form-group">
+                <label>Min Deposit (MMK)</label>
+                <input type="number" id="settingsMinMMK" class="admin-input" step="1">
+              </div>
+              <div class="admin-form-group">
+                <label>Max Deposit (MMK)</label>
+                <input type="number" id="settingsMaxMMK" class="admin-input" step="1">
+              </div>
+              <div class="admin-form-group">
+                <label>Min Deposit (USD)</label>
+                <input type="number" id="settingsMinUSD" class="admin-input" step="0.01">
+              </div>
+              <div class="admin-form-group">
+                <label>Max Deposit (USD)</label>
+                <input type="number" id="settingsMaxUSD" class="admin-input" step="0.01">
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Deposit Note (MMK)</label>
+                <textarea id="settingsNoteMMK" class="admin-input" rows="2"></textarea>
+              </div>
+              <div class="admin-form-group full-width">
+                <label>Deposit Note (USD)</label>
+                <textarea id="settingsNoteUSD" class="admin-input" rows="2"></textarea>
+              </div>
+            </div>
+            <button class="admin-btn primary large" id="saveSettingsBtn">
+              <img src="/images/icons/save.png" onerror="this.style.display='none'" style="width:16px;" alt="">
+              Save Settings
+            </button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div><!-- /adminDashboard -->
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/admin.js"></script>
+
+  <script>
+    // Deposit filter tabs
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.dep-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.dep-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          ADMIN.loadDeposits(tab.dataset.depStatus);
+        });
+      });
+      document.querySelectorAll('.ptype-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.ptype-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        });
+      });
+      document.querySelector('.pw-toggle')?.addEventListener('click', function() {
+        const inp = this.previousElementSibling;
+        if (inp) { inp.type = inp.type === 'password' ? 'text' : 'password'; this.textContent = inp.type === 'password' ? '👁' : '🙈'; }
+      });
+    });
+  </script>
+</body>
+</html>
